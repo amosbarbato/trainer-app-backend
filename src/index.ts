@@ -13,6 +13,7 @@ import fastifyApiReference from "@scalar/fastify-api-reference";
 import { z } from "zod";
 import { auth } from "./lib/auth.js";
 import { workoutPlanRoutes } from "./routes/workout-plan.js";
+import { homeRoutes } from "./routes/home.js";
 
 const app = Fastify({ logger: true });
 
@@ -41,6 +42,7 @@ await app.register(fastifyCors, {
   credentials: true,
 });
 
+// Docs
 await app.register(fastifyApiReference, {
   routePrefix: "/docs",
   configuration: {
@@ -57,7 +59,9 @@ await app.register(fastifyApiReference, {
 
 // Routes
 await app.register(workoutPlanRoutes, { prefix: "/workout-plans" });
+await app.register(homeRoutes, { prefix: "/home" });
 
+// Swagger
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/swagger.json",
