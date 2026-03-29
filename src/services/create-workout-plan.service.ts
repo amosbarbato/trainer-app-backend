@@ -1,10 +1,29 @@
-import { NotFoundError } from "../errors/index.js";
-import { WeekDay } from "../generated/prisma/enums.js";
 import { db } from "../lib/db.js";
+import { WeekDay } from "../generated/prisma/enums.js";
+import { NotFoundError } from "../errors/index.js";
 
 // Data Transfer Object
 interface InputDto {
   userId: string;
+  name: string;
+  workoutDays: Array<{
+    name: string;
+    weekDay: WeekDay;
+    isRest: boolean;
+    estimatedDurationInSeconds: number;
+    coverImageUrl?: string | null;
+    exercises: Array<{
+      order: number;
+      name: string;
+      sets: number;
+      reps: number;
+      restTimeInSeconds: number;
+    }>;
+  }>;
+}
+
+interface OutputDto {
+  id: string;
   name: string;
   workoutDays: Array<{
     name: string;
@@ -23,7 +42,7 @@ interface InputDto {
 }
 
 export class CreateWorkoutPlan {
-  async execute(dto: InputDto) {
+  async execute(dto: InputDto): Promise<OutputDto> {
     const existingWorkoutPlan = await db.workoutPlan.findFirst({
       where: { isActive: true },
     });
@@ -47,6 +66,7 @@ export class CreateWorkoutPlan {
               weekDay: workoutDay.weekDay,
               isRest: workoutDay.isRest,
               estimatedDurationInSeconds: workoutDay.estimatedDurationInSeconds,
+              coverImageUrl: workoutDay.coverImageUrl,
               exercises: {
                 create: workoutDay.exercises.map((exercise) => ({
                   name: exercise.name,
@@ -71,9 +91,27 @@ export class CreateWorkoutPlan {
       });
 
       if (!result) {
-        throw new NotFoundError("Workout plan not found");
+        throw new NotFoundError("Plano de treino não encontrado");
       }
-      return result;
+
+      return {
+        id: result.id,
+        name: result.name,
+        workoutDays: result.workoutDays.map((day) => ({
+          name: day.name,
+          weekDay: day.weekDay,
+          isRest: day.isRest,
+          estimatedDurationInSeconds: day.estimatedDurationInSeconds,
+          coverImageUrl: day.coverImageUrl ?? undefined,
+          exercises: day.exercises.map((exercise) => ({
+            order: exercise.order,
+            name: exercise.name,
+            sets: exercise.sets,
+            reps: exercise.reps,
+            restTimeInSeconds: exercise.restTimeInSeconds,
+          })),
+        })),
+      };
     });
   }
 }
