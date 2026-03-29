@@ -29,4 +29,8 @@ const WorkoutPlanSchema = z.object({
   ),
 });
 
-export { ErrorSchema, WorkoutPlanSchema };
+const StartWorkoutSessionSchema = z.object({
+  userWorkoutSessionId: z.uuid(),
+});
+
+export { ErrorSchema, WorkoutPlanSchema, StartWorkoutSessionSchema };
