@@ -163,6 +163,30 @@ const ListWorkoutPlansSchema = z.array(
   })
 );
 
+const UpsertUserTrainDataBodySchema = z.object({
+  weightInGrams: z.number().min(0),
+  heightInCentimeters: z.number().min(0),
+  age: z.number().min(0),
+  bodyFatPercentage: z.number().min(0).max(100),
+});
+
+const UserTrainDataSchema = z.object({
+  userId: z.string(),
+  userName: z.string(),
+  weightInGrams: z.number(),
+  heightInCentimeters: z.number(),
+  age: z.number(),
+  bodyFatPercentage: z.number().min(0).max(100),
+});
+
+const UpsertUserTrainDataSchema = z.object({
+  userId: z.string(),
+  weightInGrams: z.number(),
+  heightInCentimeters: z.number(),
+  age: z.number(),
+  bodyFatPercentage: z.number(),
+});
+
 export {
   ErrorSchema,
   HomeDataSchema,
@@ -176,4 +200,7 @@ export {
   StatsSchema,
   ListWorkoutPlansQuerySchema,
   ListWorkoutPlansSchema,
+  UpsertUserTrainDataBodySchema,
+  UserTrainDataSchema,
+  UpsertUserTrainDataSchema,
 };
