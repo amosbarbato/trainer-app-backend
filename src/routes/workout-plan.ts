@@ -8,6 +8,7 @@ import { GetWorkoutPlan } from "../services/get-workout-plan.service.js";
 import { GetWorkoutDay } from "../services/get-workout-day.service.js";
 import { StartWorkoutSession } from "../services/start-workout-session.service.js";
 import { UpdateWorkoutSession } from "../services/update-workout-session.service.js";
+import { ListWorkoutPlans } from "../services/list-workout-plans.service.js";
 import {
   NotFoundError,
   SessionAlreadyStartedError,
@@ -17,6 +18,8 @@ import {
   ErrorSchema,
   GetWorkoutDaySchema,
   GetWorkoutPlanSchema,
+  ListWorkoutPlansQuerySchema,
+  ListWorkoutPlansSchema,
   StartWorkoutSessionSchema,
   UpdateWorkoutSessionBodySchema,
   UpdateWorkoutSessionSchema,
@@ -321,6 +324,52 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
             code: "NOT_FOUND_ERROR",
           });
         }
+
+        return reply.status(500).send({
+          error: "Internal server error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
+  // Lista planos de treinos
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/",
+    schema: {
+      tags: ["Workout Plan"],
+      summary: "List workout plans",
+      querystring: ListWorkoutPlansQuerySchema,
+      response: {
+        200: ListWorkoutPlansSchema,
+        401: ErrorSchema,
+        500: ErrorSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      try {
+        const session = await auth.api.getSession({
+          headers: fromNodeHeaders(request.headers),
+        });
+
+        if (!session) {
+          return reply.status(401).send({
+            error: "Unauthorized",
+            code: "UNAUTHORIZED",
+          });
+        }
+
+        const listWorkoutPlans = new ListWorkoutPlans();
+
+        const result = await listWorkoutPlans.execute({
+          userId: session.user.id,
+          active: request.query.active,
+        });
+
+        return reply.status(200).send(result);
+      } catch (error) {
+        app.log.error(error);
 
         return reply.status(500).send({
           error: "Internal server error",
