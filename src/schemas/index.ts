@@ -33,4 +33,20 @@ const StartWorkoutSessionSchema = z.object({
   userWorkoutSessionId: z.uuid(),
 });
 
-export { ErrorSchema, WorkoutPlanSchema, StartWorkoutSessionSchema };
+const UpdateWorkoutSessionBodySchema = z.object({
+  completedAt: z.iso.datetime(),
+});
+
+const UpdateWorkoutSessionSchema = z.object({
+  id: z.uuid(),
+  startedAt: z.iso.datetime(),
+  completedAt: z.iso.datetime(),
+});
+
+export {
+  ErrorSchema,
+  WorkoutPlanSchema,
+  StartWorkoutSessionSchema,
+  UpdateWorkoutSessionBodySchema,
+  UpdateWorkoutSessionSchema,
+};
