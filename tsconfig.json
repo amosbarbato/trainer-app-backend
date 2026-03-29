@@ -1,13 +1,16 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
+    "lib": [
+      "ESNext"
+    ],
     "target": "esnext",
-    "types": [],
+    "types": [
+      "node"
+    ],
     "moduleResolution": "nodenext",
     // Other Outputs
     "sourceMap": true,
