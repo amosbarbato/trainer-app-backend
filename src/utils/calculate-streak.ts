@@ -1,5 +1,14 @@
 import dayjs from "dayjs";
-import { WEEKDAY_MAP } from "./weekday-map.js";
+
+const WEEKDAY_MAP: Record<number, string> = {
+  0: "SUNDAY",
+  1: "MONDAY",
+  2: "TUESDAY",
+  3: "WEDNESDAY",
+  4: "THURSDAY",
+  5: "FRIDAY",
+  6: "SATURDAY",
+};
 
 interface WorkoutDay {
   weekDay: string;

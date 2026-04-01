@@ -1,12 +1,22 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import { db } from "../lib/db.js";
+import type { WeekDay } from "../generated/prisma/enums.js";
 import { calculateConsistencyByDay } from "../utils/calculate-consistency.js";
-import { WEEKDAY_MAP } from "../utils/weekday-map.js";
-import { NotFoundError } from "../errors/index.js";
 import { calculateWorkoutStreak } from "../utils/calculate-streak.js";
+import { NotFoundError } from "../errors/index.js";
 
 dayjs.extend(utc);
+
+const WEEKDAY_MAP: Record<number, string> = {
+  0: "SUNDAY",
+  1: "MONDAY",
+  2: "TUESDAY",
+  3: "WEDNESDAY",
+  4: "THURSDAY",
+  5: "FRIDAY",
+  6: "SATURDAY",
+};
 
 interface InputDto {
   userId: string;
@@ -20,7 +30,7 @@ interface OutputDto {
     id: string;
     name: string;
     isRest: boolean;
-    weekDay: string;
+    weekDay: WeekDay;
     estimatedDurationInSeconds: number;
     coverImageUrl?: string;
     exercisesCount: number;
@@ -52,7 +62,7 @@ export class GetHomeData {
     });
 
     if (!workoutPlan) {
-      throw new Error("Plano de treino ativo não encontrado");
+      throw new Error("Nenhum treino ativo foi encontrado.");
     }
 
     const todayWeekDay = WEEKDAY_MAP[currentDate.day()];
@@ -61,7 +71,7 @@ export class GetHomeData {
     );
 
     if (!todayWorkoutDay) {
-      throw new NotFoundError("Nenhum treino foi encontrado para hoje");
+      throw new NotFoundError("Nenhum treino ativo foi encontrado.");
     }
 
     const weekStart = currentDate.day(0).startOf("day");

@@ -17,8 +17,8 @@ interface OutputDto {
 
 export class StartWorkoutSession {
   async execute(dto: InputDto): Promise<OutputDto> {
-    const workoutPlan = await db.workoutPlan.findFirst({
-      where: { isActive: true },
+    const workoutPlan = await db.workoutPlan.findUnique({
+      where: { id: dto.workoutPlanId },
     });
 
     if (!workoutPlan) {
