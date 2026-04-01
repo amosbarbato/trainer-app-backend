@@ -16,6 +16,7 @@ import { workoutPlanRoutes } from "./routes/workout-plan.js";
 import { homeRoutes } from "./routes/home.js";
 import { statsRoutes } from "./routes/stats.js";
 import { meRoutes } from "./routes/me.js";
+import { aiRoutes } from "./routes/ai.js";
 
 const app = Fastify({ logger: true });
 
@@ -64,6 +65,7 @@ await app.register(workoutPlanRoutes, { prefix: "/workout-plans" });
 await app.register(homeRoutes, { prefix: "/home" });
 await app.register(statsRoutes, { prefix: "/stats" });
 await app.register(meRoutes, { prefix: "/me" });
+await app.register(aiRoutes, { prefix: "/ai" });
 
 // Swagger
 app.withTypeProvider<ZodTypeProvider>().route({
