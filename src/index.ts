@@ -12,13 +12,28 @@ import fastifySwagger from "@fastify/swagger";
 import fastifyApiReference from "@scalar/fastify-api-reference";
 import { z } from "zod";
 import { auth } from "./lib/auth.js";
+import { env } from "./lib/env.js";
 import { workoutPlanRoutes } from "./routes/workout-plan.js";
 import { homeRoutes } from "./routes/home.js";
 import { statsRoutes } from "./routes/stats.js";
 import { meRoutes } from "./routes/me.js";
 import { aiRoutes } from "./routes/ai.js";
 
-const app = Fastify({ logger: true });
+const envToLogger = {
+  development: {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+  production: true,
+  test: false,
+};
+
+const app = Fastify({ logger: envToLogger[env.NODE_ENV] });
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
@@ -32,8 +47,8 @@ await app.register(fastifySwagger, {
     },
     servers: [
       {
-        description: "Localhost",
-        url: "http://localhost:8080",
+        description: "API Base URL",
+        url: env.API_BASE_URL,
       },
     ],
   },
@@ -41,7 +56,7 @@ await app.register(fastifySwagger, {
 });
 
 await app.register(fastifyCors, {
-  origin: true,
+  origin: [env.WEB_APP_BASE_URL],
   credentials: true,
 });
 
@@ -134,7 +149,7 @@ app.route({
 });
 
 try {
-  await app.listen({ port: Number(process.env.PORT || 8080) });
+  await app.listen({ port: env.PORT });
 } catch (error) {
   app.log.error(error);
   process.exit(1);
