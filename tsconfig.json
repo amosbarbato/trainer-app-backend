@@ -30,4 +30,5 @@
     "src"
   ],
   "outDir": "dist",
+  "rootDir": "src"
 }
