@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
-    "build": "pnpm exec prisma generate && tsc"
+    "build": "pnpm exec prisma generate && tsc",
+    "start": "tsx dist/index.ts"
   },
   "keywords": [],
   "author": "",
