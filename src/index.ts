@@ -56,7 +56,27 @@ await app.register(fastifySwagger, {
 });
 
 await app.register(fastifyCors, {
-  origin: [env.WEB_APP_BASE_URL],
+  methods: ["GET", "POST", "PUT", "PATCH", "OPTIONS"],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    // permite qualquer deploy da Vercel
+    if (origin.includes("vercel.app")) {
+      return callback(null, true);
+    }
+
+    // localhost
+    if (origin === "http://localhost:3000") {
+      return callback(null, true);
+    }
+
+    // produção customizada (se tiver)
+    if (origin === env.WEB_APP_BASE_URL) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"), false);
+  },
   credentials: true,
 });
 
