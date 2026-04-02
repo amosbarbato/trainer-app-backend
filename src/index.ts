@@ -110,7 +110,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
 });
 
 app.route({
-  method: ["GET", "POST"],
+  method: ["GET", "POST", "OPTIONS"],
   url: "/api/auth/*",
   schema: { hide: true },
   async handler(request, reply) {
