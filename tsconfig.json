@@ -25,10 +25,10 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "include": [
     "src"
   ],
-  "outDir": "dist",
-  "rootDir": "src"
 }
