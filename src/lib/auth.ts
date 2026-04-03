@@ -19,5 +19,13 @@ export const auth = betterAuth({
   plugins: [openAPI()],
   advanced: {
     crossSubDomainCookies: { enabled: true },
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+    },
+  },
+  cookies: {
+    secure: true,
+    sameSite: "none",
   },
 });
